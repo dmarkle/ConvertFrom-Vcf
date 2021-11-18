@@ -58,7 +58,5 @@ foreach ($line in $content) {
     if ($line -match "CATEGORIES.*") {
         $tokens = $line -split ":"
         $currentCard."Categories" = $tokens[1]
-    }
-    
+    }  
 }
-
