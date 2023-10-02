@@ -1,18 +1,25 @@
-param($fileName = "c:\users\dmarkle\downloads\All Contacts.vcf")
+param(
+  $fileName = "c:\users\dmarkle\downloads\All Contacts.vcf",
+  [switch] $isGoogleContactsVCardFormat
+)
 
 function New-Card {
     return [PSCustomObject][ordered]@{'Full Name'="";'Categories'='';'Organization'='';'Address'='';'Phone1'='';'Phone2'='';'Phone3'='';'Phone4'='';'Note'=''}
 }
 
-
 $content = Get-Content $fileName
-$cardCount = 0;
 $currentCard = New-Card
 $state = 'out'
+
+$openingTag = "^PRODID.*"
+if ($isGoogleContactsVCardFormat.IsPresent) {
+
+  $openingTag = "^BEGIN:VCARD.*"
+}
+
 foreach ($line in $content) {
-    if ($line -match "^PRODID.*") {
+    if ($line -match $openingTag) {
         $state = 'in'
-        $cardCount++;
         $telephones = 0;
         $currentCard = New-Card
         continue;
